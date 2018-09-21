@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/WebProxy.iml" filepath="$PROJECT_DIR$/WebProxy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/webproxy-core/webproxy-core.iml" filepath="$PROJECT_DIR$/webproxy-core/webproxy-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/webproxy-download/webproxy-download.iml" filepath="$PROJECT_DIR$/webproxy-download/webproxy-download.iml" />
+    </modules>
+  </component>
+</project>
