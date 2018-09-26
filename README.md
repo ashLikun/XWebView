@@ -1,11 +1,11 @@
-[![Release](https://jitpack.io/v/ashLikun/CommonAdapter.svg)](https://jitpack.io/#ashLikun/CommonAdapter)
+[![Release](https://jitpack.io/v/ashLikun/XWebView.svg)](https://jitpack.io/#ashLikun/XWebView)
 
+# **XWebView**
+XWebView 是一个基于的 Android WebView ，极度容易使用以及功能强大的库，提供了 Android WebView 一系列的问题解决方案 ，并且轻量和极度灵活。
 
-# **CommonAdapter**
-万能适配器
 ## 使用方法
 
-build.gradle文件中添加:
+* build.gradle文件中添加:
 ```gradle
 allprojects {
     repositories {
@@ -13,147 +13,151 @@ allprojects {
     }
 }
 ```
-并且:
+* 并且:
 
 ```gradle
 dependencies {
-     implementation 'com.github.ashLikun.CommonAdapter:adapter:{latest version}'//没有databind
-     implementation 'com.github.ashLikun.CommonAdapter:databindadapter:{latest version}'//使用databind
-     //是否使用阿里巴巴的VLayou adapter  复杂布局
-     compile ('com.alibaba.android:vlayout:1.2.13@aar') {
-             transitive = true
-         }
+     implementation 'com.github.ashLikun.XWebView:core:{latest version}'//原生WebView
+     implementation 'com.github.ashLikun.XWebView:core-x5:{latest version}'//使用腾讯X5,需要自行下载sdk(jar包)
 }
 ```
-### 1.用法
-    使用前，对于Android Studio的用户，可以选择添加:
+* #### 基本用法
 
-            如果使用MultipleAdapter
-            需要使用阿里巴巴的库com.alibaba.android:vlayout:版本
 
-            //普通padater
-             recyclerView.setAdapter(new CommonAdapter<String>(this, R.layout.item_view, listDatas) {
-                 @Override
-                 public void convert(ViewHolder holder, String o) {
-                 }
-             });
-             //普通的多种布局
-              recyclerView.setAdapter(new MultiItemCommonAdapter<String>(this, listDatas) {
-                         @Override
-                         public void convert(ViewHolder holder, String o) {
+```java
+ xWeb = XWeb.withXml(this)
+            .useDefaultIndicator()
+            .setWebWebSettings(getWebSettings())
+            .setWebView(webView)
+            .setWebChromeClient(mWebChromeClient)
+            .createWeb()
+            .ready()
+            .go(url);
 
-                         }
+```
 
-                         @Override
-                         public int getLayoutId(int itemType) {
-                             return itemType == 1 ? R.layout.item_view : R.layout.item_view2;
-                         }
+* #### 调用 Javascript 方法拼接太麻烦 ？ 请看 。
+```javascript
+function callByAndroid(){
+      console.log("callByAndroid")
+  }
+xWeb.getJsAccessEntrace().quickCallJs("callByAndroid");
+```
 
-                         @Override
-                         public int getItemViewType(int position, String o) {
-                             if (position == 2 || position == 8 || position == 15 || position == 25 || position == 31) {
-                                 return 1;
-                             }
-                             return 2;
-                         }
-                     });
-              //分组Adapter
-                recyclerView.setAdapter(new SectionAdapter<String>(this, R.layout.item_view, listDatas) {
 
-                          @Override
-                          public void convert(ViewHolder holder, String s) {
-                              holder.setText(R.id.textView, s);
-                          }
+* #### Javascript 调 Java ?
+```java
+xWeb.getJsInterfaceHolder().addJavaObject("android",new AndroidInterface(xWeb,this));
+window.android.callAndroid();
+```
 
-                          @Override
-                          public int sectionHeaderLayoutId() {
-                              return R.layout.item_view2;
-                          }
+* #### 事件处理
+```java
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-                          @Override
-                          public String getTitle(int position, String s) {
-                              if (position % 4 == 0) {
-                                  return "标题" + position / 4;
-                              }
-                              return null;
-                          }
+        if (xWeb.handleKeyEvent(keyCode, event)) {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+```
 
-                          @Override
-                          public void setTitle(ViewHolder holder, String title, String s) {
-                              holder.setText(R.id.textView, title);
-                          }
-                      });
+* #### 跟随 Activity Or Fragment 生命周期 ， 释放 CPU 更省电 。
+```java
+    @Override
+    protected void onPause() {
+        xWeb.getWebLifeCycle().onPause(); 
+        super.onPause();
 
-            //使用数据绑定
-                   //普通的
-                  recyclerView.setAdapter(new CommonBindAdapter<String, ItemViewBinding>(this, R.layout.item_view, listDatas) {
-                      @Override
-                      public void convert(DataBindHolder<ItemViewBinding> holder, String s) {
-                          holder.dataBind.setItemData(s);
-                      }
-                  });
-                  //简易的
-                   recyclerView.setAdapter(new EasyBindAdapter(this, R.layout.item_view, listDatas, BR.itemData));
-                   //多种列表
-                    recyclerView.setAdapter(new MultiItemBindAdapter<String>(this, listDatas) {
+    }
 
-                               @Override
-                               public void convert(DataBindHolder<ViewDataBinding> holder, String s) {
-                                   if (holder.getItemViewType() == 1) {
-                                       holder.getDataBind(ItemView1Binding.class).setItemData(s);
-                                   } else {
-                                   }
-                               }
+    @Override
+    protected void onResume() {
+        xWeb.getWebLifeCycle().onResume();
+        super.onResume();
+    }
+    @Override
+    public void onDestroyView() {
+        xWeb.getWebLifeCycle().onDestroy();
+        super.onDestroyView();
+    }    
+```
 
-                               @Override
-                               public int getLayoutId(int itemType) {
-                                   if (itemType == 1) {
-                                       return R.layout.item_view1;
-                                   } else {
-                                       return R.layout.item_view2;
-                                   }
-                               }
+* #### 全屏视频播放
+```
+<!--如果你的应用需要用到视频 ， 那么请你在使用 AgentWeb 的 Activity 对应的清单文件里加入如下配置-->
+android:hardwareAccelerated="true"
+android:configChanges="orientation|screenSize"
+```
 
-                               @Override
-                               public int getItemViewType(int position, String s) {
-                                   if (position == 2 || position == 8 || position == 15 || position == 25 || position == 31) {
-                                       return 1;
-                                   }
-                                   return 2;
-                               }
-                           });
-                    //分组的Adapter
-                      recyclerView.setAdapter(new SectionAdapter<String, ItemViewBinding>(this, R.layout.item_view, listDatas) {
-                                @Override
-                                public void convert(DataBindHolder<ItemViewBinding> holder, String s) {
-                                    holder.dataBind.setItemData(s);
-                                }
+* #### 定位
+```
+<!--AgentWeb 是默认允许定位的 ，如果你需要该功能 ， 请在你的 AndroidManifest 文件里面加入如下权限 。-->
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+```
 
-                                @Override
-                                public int sectionHeaderLayoutId() {
-                                    return R.layout.item_view2;
-                                }
+* #### 返回上一页
+```java
+if (!xWeb.back()){
+      finish();
+}
+```
 
-                                @Override
-                                public String getTitle(int position, String s) {
-                                    if (position % 4 == 0) {
-                                        return "标题" + position / 4;
-                                    }
-                                    return null;
-                                }
+* #### 获取 WebView
+```java
+	xWeb.getWebCreator().getWebView();
+```
 
-                                @Override
-                                public void setTitle(DataBindHolder holder, String title, String s) {
-                                    holder.setText(R.id.textView, title);
-                                }
-                            });
+* #### 查看 Cookies
+```java
+String cookies=XWebConfig.getCookiesByUrl(targetUrl);
+```
+
+* #### 同步 Cookie
+```java
+XWebConfig.syncCookie("http://www.jd.com","ID=XXXX");
+```
+
+* #### MiddlewareWebChromeBase 支持多个 WebChromeClient
+```java
+    useMiddlewareWebClient(middleWrareWebClientBase)
+```
+* #### MiddlewareWebClientBase 支持多个 WebViewClient
+```java
+    useMiddlewareWebChrome(middlewareWebChromeBase)
+```
+
+* ####  清空缓存 
+```java
+XWebConfig.clearDiskCache(this.getContext());
+```
+
+* #### 权限拦截
+```java
+protected PermissionInterceptor mPermissionInterceptor = new PermissionInterceptor() {
+
+        @Override
+        public boolean intercept(String url, String[] permissions, String action) {
+            Log.i(TAG, "url:" + url + "  permission:" + permissions + " action:" + action);
+            return false;
+        }
+    };
+```
 
 ### 混肴
 ####
-    保证CommonAdapter的footerSize和headerSize字段不被混肴
-    #某一变量不混淆
-    -keepclasseswithmembers class com.xxx.xxx {
-        private com.ashlikun.adapter.recyclerview.BaseAdapter footerSize;
-        private com.ashlikun.adapter.recyclerview.BaseAdapter headerSize;
+
+##### X5内核混淆
+
+    -keep public enum com.tencent.smtt.sdk.WebSettings$** {
+       *;
+    }
+    -keep public enum com.tencent.smtt.sdk.QbSdk$** {
+       *;
+    }
+    -keep public class com.tencent.smtt.sdk.WebSettings {
+       public *;
     }
 

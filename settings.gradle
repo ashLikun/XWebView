@@ -1,1 +1,1 @@
-include ':app', ':webproxy-core', ':webproxy-download'
+include ':app', ':core', ':core-x5'

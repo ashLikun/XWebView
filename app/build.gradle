@@ -5,16 +5,14 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
-        applicationId "com.ashlikun.webproxy.simple"
+        applicationId "com.ashlikun.xwebview.simple"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
         multiDexEnabled = true
     }
-    dataBinding {
-        enabled true
-    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -24,7 +22,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation rootProject.ext.designVersion
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    //implementation project(':XWeb-core')
+    implementation project(':core-x5')
 }

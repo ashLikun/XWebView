@@ -2,10 +2,10 @@
 <paths>
     <external-path
         name="files_root"
-        path="Android/data/com.ashlikun.webproxy.simple/" />
+        path="Android/data/com.ashlikun.xwebview.simple/" />
     <external-path
         name="camera_photos"
-        path="Android/data/com.ashlikun.webproxy.simple/" />
+        path="Android/data/com.ashlikun.xwebview.simple/" />
     <external-path
         name="external_storage_root"
         path="." />
