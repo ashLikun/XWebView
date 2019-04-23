@@ -2,7 +2,7 @@ package com.ashlikun.xwebview.security;
 
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 import android.webkit.WebView;
 
 import com.ashlikun.xwebview.XWeb;

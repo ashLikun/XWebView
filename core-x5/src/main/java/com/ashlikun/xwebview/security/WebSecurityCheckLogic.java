@@ -1,6 +1,6 @@
 package com.ashlikun.xwebview.security;
 
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 import com.tencent.smtt.sdk.WebView;
 
 import com.ashlikun.xwebview.XWeb;

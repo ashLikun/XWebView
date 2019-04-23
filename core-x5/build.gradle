@@ -20,7 +20,6 @@ android {
 
 dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'libs')
-    compileOnly rootProject.ext.v4Version
     compileOnly rootProject.ext.designVersion
 }
 

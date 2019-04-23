@@ -1,7 +1,7 @@
 package com.ashlikun.xwebview.js;
 
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import com.tencent.smtt.sdk.ValueCallback;
 
 

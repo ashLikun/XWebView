@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.webkit.ValueCallback;
@@ -20,10 +19,10 @@ import android.webkit.WebView;
 import com.ashlikun.xwebview.R;
 import com.ashlikun.xwebview.XWebConfig;
 import com.ashlikun.xwebview.XWebUtils;
+import com.ashlikun.xwebview.security.WebPermissions;
 import com.ashlikun.xwebview.ui.AbsWebUIController;
 import com.ashlikun.xwebview.ui.Action;
 import com.ashlikun.xwebview.ui.ActionActivity;
-import com.ashlikun.xwebview.security.WebPermissions;
 import com.ashlikun.xwebview.websetting.PermissionInterceptor;
 
 import org.json.JSONArray;
@@ -45,6 +44,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import androidx.annotation.NonNull;
 
 /**
  * @author　　: 李坤
