@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <external-cache-path
-        name="xweb_files"
-        path="xweb-cache"/>
+    <external-path
+        name="external_storage_root"
+        path="." /><!-- sd根目录-->
+    <root-path
+        name="external_files"
+        path="/storage/" /><!-- sd根目录/-->
 </paths>
