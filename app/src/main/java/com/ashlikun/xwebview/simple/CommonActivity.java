@@ -3,23 +3,32 @@ package com.ashlikun.xwebview.simple;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.webkit.DownloadListener;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.ashlikun.xwebview.XWeb;
+import com.ashlikun.xwebview.jsbridge.BridgeHandler;
+import com.ashlikun.xwebview.jsbridge.CallBackFunction;
 import com.ashlikun.xwebview.websetting.AbsXWebSettings;
 import com.ashlikun.xwebview.websetting.IWebSettings;
 import com.ashlikun.xwebview.websetting.WebListenerManager;
-import com.ashlikun.xwebview.webview.XWebView;
-import com.tencent.smtt.sdk.DownloadListener;
-import com.tencent.smtt.sdk.WebChromeClient;
-import com.tencent.smtt.sdk.WebView;
+import com.ashlikun.xwebview.webview.XBridgeWebView;
+
 
 public class CommonActivity extends AppCompatActivity {
 
@@ -27,6 +36,7 @@ public class CommonActivity extends AppCompatActivity {
     LinearLayout rootView;
     TextView toolbarTitle;
     public String url;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,12 +45,13 @@ public class CommonActivity extends AppCompatActivity {
         setContentView(R.layout.activity_common);
         rootView = findViewById(R.id.rootView);
         toolbarTitle = findViewById(R.id.toolbar_title);
-        XWebView webView = findViewById(R.id.webView);
+        XBridgeWebView webView = findViewById(R.id.webView);
         xWeb = XWeb.withXml(this)
                 .useDefaultIndicator()
                 .setWebWebSettings(getWebSettings())
                 .setWebView(webView)
                 .setWebChromeClient(mWebChromeClient)
+                .setWebViewClient(mWebViewClient)
                 .createWeb()
                 .ready()
                 .go(url);
@@ -63,11 +74,60 @@ public class CommonActivity extends AppCompatActivity {
                 Log.e("", "啊啊啊啊啊");
             }
         });
+
+        //      注册监听方法当js中调用callHandler方法时会调用此方法（handlerName必须和js中相同）
+        webView.registerHandler("JsToAppHandler", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackFunction function) {
+                Log.e("TAG", "js返回：" + data);
+                //显示js传递给Android的消息
+                Toast.makeText(CommonActivity.this, "js返回:" + data, Toast.LENGTH_LONG).show();
+            }
+        });
+//        bt.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////              调用js中的方法（必须和js中的handlerName想同）
+//                webview.callHandler("functionInJs", "Android调用js66", new CallBackFunction() {
+//                    @Override
+//                    public void onCallBack(String data) {
+//                        Log.e("TAG", "onCallBack:" + data);
+//                        Toast.makeText(MainActivity.this, data, Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//            }
+//        });
     }
 
+    protected WebViewClient mWebViewClient = new WebViewClient() {
+        @Override
+        public void onReceivedError(WebView webView, int i, String s, String s1) {
+            super.onReceivedError(webView, i, s, s1);
+            Log.e("CommonActivity", "onReceivedError   " + i + "  " + s + "   " + s1);
+        }
+
+        @Override
+        public void onReceivedError(WebView webView, WebResourceRequest webResourceRequest, WebResourceError webResourceError) {
+            super.onReceivedError(webView, webResourceRequest, webResourceError);
+            Log.e("CommonActivity", "onReceivedError   " + webResourceError.getErrorCode() + "   " + webResourceError.getDescription());
+        }
+
+        @Override
+        public void onReceivedHttpError(WebView webView, WebResourceRequest webResourceRequest, WebResourceResponse webResourceResponse) {
+            super.onReceivedHttpError(webView, webResourceRequest, webResourceResponse);
+            Log.e("CommonActivity", "onReceivedHttpError   ");
+        }
+
+        @Override
+        public void onPageFinished(WebView webView, String s) {
+            super.onPageFinished(webView, s);
+            Log.e("CommonActivity", "onPageFinished   " + s);
+        }
+    };
     protected WebChromeClient mWebChromeClient = new WebChromeClient() {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
+            Log.e("CommonActivity", "onProgressChanged   " + newProgress);
         }
 
         @Override

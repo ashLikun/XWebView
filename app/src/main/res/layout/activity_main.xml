@@ -36,6 +36,12 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="onRenrenying"
+                android:text="人人影" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:onClick="onOgow11"
                 android:text="上传文件" />
 

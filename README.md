@@ -84,6 +84,11 @@ window.android.callAndroid();
     }    
 ```
 
+* #### JsBridge?
+
+ XBridgeWebView
+ 其他就参考JsBridge
+
 * #### 全屏视频播放
 ```
 <!--如果你的应用需要用到视频 ， 那么请你在使用 AgentWeb 的 Activity 对应的清单文件里加入如下配置-->

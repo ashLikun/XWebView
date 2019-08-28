@@ -1,9 +1,10 @@
 package com.ashlikun.xwebview.simple;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onHuitan(View view) {
         CommonActivity.start(this, UrlConfig.PULL_HUITAN);
+    }
+
+    public void onRenrenying(View view) {
+        CommonActivity.start(this, UrlConfig.RENREN_YIN);
     }
 
     public void onDownload(View view) {

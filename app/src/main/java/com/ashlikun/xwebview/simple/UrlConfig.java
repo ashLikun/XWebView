@@ -20,6 +20,8 @@ public class UrlConfig {
      * 京东
      */
     public static final String JD = "https://m.jd.com/";
+    //人人影
+    public static final String RENREN_YIN = "https://testvideo.meiyayuming.com.cn/app/inviteposter.html?uid=4314017";
     /**
      * 上传文件
      */

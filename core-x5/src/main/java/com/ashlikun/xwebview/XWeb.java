@@ -1,21 +1,18 @@
 package com.ashlikun.xwebview;
 
 import android.app.Activity;
-import androidx.annotation.ColorInt;
-import androidx.annotation.IdRes;
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.collection.ArrayMap;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tencent.smtt.sdk.WebChromeClient;
-import com.tencent.smtt.sdk.WebView;
-import com.tencent.smtt.sdk.WebViewClient;
+import androidx.annotation.ColorInt;
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.collection.ArrayMap;
+import androidx.fragment.app.Fragment;
 
 import com.ashlikun.xwebview.event.EventHandlerImpl;
 import com.ashlikun.xwebview.event.EventInterceptor;
@@ -52,6 +49,9 @@ import com.ashlikun.xwebview.webview.IUrlLoader;
 import com.ashlikun.xwebview.webview.IWebLayout;
 import com.ashlikun.xwebview.webview.UrlLoaderImpl;
 import com.ashlikun.xwebview.webview.WebCreator;
+import com.tencent.smtt.sdk.WebChromeClient;
+import com.tencent.smtt.sdk.WebView;
+import com.tencent.smtt.sdk.WebViewClient;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -244,7 +244,10 @@ public final class XWeb {
         return this.mWebLifeCycle;
     }
 
-
+    /**
+     * 调用js
+     * @return
+     */
     public JsAccessEntrace getJsAccessEntrace() {
 
         JsAccessEntrace mJsAccessEntrace = this.mJsAccessEntrace;

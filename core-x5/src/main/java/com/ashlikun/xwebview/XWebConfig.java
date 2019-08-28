@@ -3,8 +3,10 @@ package com.ashlikun.xwebview;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
+
 import com.tencent.smtt.sdk.CookieManager;
 import com.tencent.smtt.sdk.CookieSyncManager;
 import com.tencent.smtt.sdk.ValueCallback;
