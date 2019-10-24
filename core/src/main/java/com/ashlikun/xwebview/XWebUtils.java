@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -20,15 +21,11 @@ import android.os.Looper;
 import android.os.StatFs;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-import androidx.core.app.AppOpsManagerCompat;
-import androidx.core.content.ContextCompat;
-import androidx.loader.content.CursorLoader;
-import androidx.core.content.FileProvider;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.webkit.ValueCallback;
@@ -36,6 +33,12 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.AppOpsManagerCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.loader.content.CursorLoader;
 
 import com.ashlikun.xwebview.filechooser.FileChooser;
 import com.ashlikun.xwebview.ui.AbsWebUIController;
@@ -116,6 +119,23 @@ public class XWebUtils {
 
     }
 
+    /**
+     * 解决低版本5.0-5.1,androidx.appcompat:appcompat:1.1.0有问题，1.0.0没有问题，高版本没有出来呢
+     * 如Vivo x7
+     * Error inflating class android.webkit.WebView bug
+     * https://stackoverflow.com/questions/41025200/android-view-inflateexception-error-inflating-class-android-webkit-webview
+     *
+     * @param context
+     * @return
+     */
+    public static Context getFixedContext(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (context instanceof ContextThemeWrapper || context instanceof androidx.appcompat.view.ContextThemeWrapper) {
+                return context.createConfigurationContext(new Configuration());
+            }
+        }
+        return context;
+    }
 
     public static File createFileByName(Context context, String name, boolean cover) throws IOException {
 

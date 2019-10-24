@@ -7,10 +7,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.ashlikun.xwebview.webview.XBridgeWebView
+    <com.ashlikun.xwebview.webview.XWebView
         android:id="@+id/webView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></com.ashlikun.xwebview.webview.XBridgeWebView>
+        android:layout_height="match_parent"></com.ashlikun.xwebview.webview.XWebView>
+
 
     <include layout="@layout/toorbar_main"></include>
 

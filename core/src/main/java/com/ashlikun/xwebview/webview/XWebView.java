@@ -5,9 +5,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
-import androidx.core.view.NestedScrollingChild2;
-import androidx.core.view.NestedScrollingChildHelper;
-import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
@@ -23,6 +20,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import androidx.core.view.NestedScrollingChild2;
+import androidx.core.view.NestedScrollingChildHelper;
+import androidx.core.view.ViewCompat;
+
+import com.ashlikun.xwebview.XWebUtils;
 import com.ashlikun.xwebview.js.JsCallJava;
 import com.ashlikun.xwebview.websetting.MiddlewareWebChromeBase;
 import com.ashlikun.xwebview.websetting.MiddlewareWebClientBase;
@@ -69,13 +71,14 @@ public class XWebView extends WebView implements NestedScrollingChild2 {
     }
 
     public XWebView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        super(XWebUtils.getFixedContext(context), attrs);
         removeSearchBoxJavaBridge();
         mIsInited = true;
         mFixedOnReceivedTitle = new FixedOnReceivedTitle();
         mChildHelper = new NestedScrollingChildHelper(this);
         setNestedScrollingEnabled(true);
     }
+
 
     /**
      * 经过大量的测试，按照以下方式才能保证JS脚本100%注入成功：

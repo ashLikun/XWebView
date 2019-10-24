@@ -5,9 +5,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
-import androidx.core.view.NestedScrollingChild2;
-import androidx.core.view.NestedScrollingChildHelper;
-import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
@@ -18,6 +15,11 @@ import android.view.ViewParent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
+import androidx.core.view.NestedScrollingChild2;
+import androidx.core.view.NestedScrollingChildHelper;
+import androidx.core.view.ViewCompat;
+
+import com.ashlikun.xwebview.XWebUtils;
 import com.ashlikun.xwebview.js.JsCallJava;
 import com.ashlikun.xwebview.websetting.MiddlewareWebChromeBase;
 import com.ashlikun.xwebview.websetting.MiddlewareWebClientBase;
@@ -69,7 +71,7 @@ public class XWebView extends WebView implements NestedScrollingChild2 {
     }
 
     public XWebView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        super(XWebUtils.getFixedContext(context), attrs);
         removeSearchBoxJavaBridge();
         mIsInited = true;
         mFixedOnReceivedTitle = new FixedOnReceivedTitle();

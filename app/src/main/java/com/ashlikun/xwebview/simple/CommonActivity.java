@@ -2,6 +2,7 @@ package com.ashlikun.xwebview.simple;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,12 +23,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ashlikun.xwebview.XWeb;
-import com.ashlikun.xwebview.jsbridge.BridgeHandler;
-import com.ashlikun.xwebview.jsbridge.CallBackFunction;
 import com.ashlikun.xwebview.websetting.AbsXWebSettings;
 import com.ashlikun.xwebview.websetting.IWebSettings;
 import com.ashlikun.xwebview.websetting.WebListenerManager;
-import com.ashlikun.xwebview.webview.XBridgeWebView;
+import com.ashlikun.xwebview.webview.XWebView;
 
 
 public class CommonActivity extends AppCompatActivity {
@@ -45,7 +44,7 @@ public class CommonActivity extends AppCompatActivity {
         setContentView(R.layout.activity_common);
         rootView = findViewById(R.id.rootView);
         toolbarTitle = findViewById(R.id.toolbar_title);
-        XBridgeWebView webView = findViewById(R.id.webView);
+        XWebView webView = findViewById(R.id.webView);
         xWeb = XWeb.withXml(this)
                 .useDefaultIndicator()
                 .setWebWebSettings(getWebSettings())
@@ -71,19 +70,19 @@ public class CommonActivity extends AppCompatActivity {
         findViewById(R.id.iv_more).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("", "啊啊啊啊啊");
+                Toast.makeText(CommonActivity.this, new WebView(CommonActivity.this).getSettings().getUserAgentString(), Toast.LENGTH_SHORT).show();
             }
         });
 
         //      注册监听方法当js中调用callHandler方法时会调用此方法（handlerName必须和js中相同）
-        webView.registerHandler("JsToAppHandler", new BridgeHandler() {
-            @Override
-            public void handler(String data, CallBackFunction function) {
-                Log.e("TAG", "js返回：" + data);
-                //显示js传递给Android的消息
-                Toast.makeText(CommonActivity.this, "js返回:" + data, Toast.LENGTH_LONG).show();
-            }
-        });
+//        webView.registerHandler("JsToAppHandler", new BridgeHandler() {
+//            @Override
+//            public void handler(String data, CallBackFunction function) {
+//                Log.e("TAG", "js返回：" + data);
+//                //显示js传递给Android的消息
+//                Toast.makeText(CommonActivity.this, "js返回:" + data, Toast.LENGTH_LONG).show();
+//            }
+//        });
 //        bt.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -97,6 +96,11 @@ public class CommonActivity extends AppCompatActivity {
 //                });
 //            }
 //        });
+    }
+
+    @Override
+    public void applyOverrideConfiguration(Configuration overrideConfiguration) {
+        super.applyOverrideConfiguration(overrideConfiguration);
     }
 
     protected WebViewClient mWebViewClient = new WebViewClient() {
