@@ -1,7 +1,7 @@
 package com.ashlikun.xwebview.websetting;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -10,10 +10,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-import androidx.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+
+import androidx.annotation.RequiresApi;
 
 import com.ashlikun.xwebview.XWebConfig;
 import com.ashlikun.xwebview.XWebUtils;
@@ -31,7 +32,6 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 /**
  * @author　　: 李坤
  * 创建时间: 2018/9/21 14:41
@@ -45,7 +45,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
     /**
      * Activity's WeakReference
      */
-    private WeakReference<Activity> mWeakReference = null;
+    private WeakReference<Context> mWeakReference = null;
     /**
      * 缩放
      */
@@ -61,7 +61,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
     /**
      * Android  WebViewClient ' path 用于反射，判断用户是否重写了WebViewClient的某一个方法
      */
-    private static final String ANDROID_WEBVIEWCLIENT_PATH = "com.tencent.smtt.sdk.WebViewClient";
+    private static final String ANDROID_WEBVIEWCLIENT_PATH = "android.webkit.WebViewClient";
     /**
      * intent ' s scheme
      */
@@ -129,7 +129,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
         super(builder.mClient);
         this.mWebView = builder.mWebView;
         this.mWebViewClient = builder.mClient;
-        mWeakReference = new WeakReference<Activity>(builder.mActivity);
+        mWeakReference = new WeakReference<Context>(builder.mContext);
         this.webClientHelper = builder.mWebClientHelper;
         mWebUIController = new WeakReference<AbsWebUIController>(XWebUtils.getWebUIControllerByWebView(builder.mWebView));
         mIsInterceptUnkownUrl = builder.mIsInterceptUnkownScheme;
@@ -287,16 +287,16 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
     private boolean lookup(String url) {
         try {
             Intent intent;
-            Activity mActivity = null;
-            if ((mActivity = mWeakReference.get()) == null) {
+            Context mContext = null;
+            if ((mContext = mWeakReference.get()) == null) {
                 return true;
             }
-            PackageManager packageManager = mActivity.getPackageManager();
+            PackageManager packageManager = mContext.getPackageManager();
             intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
             ResolveInfo info = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
             // 跳到该应用
             if (info != null) {
-                mActivity.startActivity(intent);
+                mContext.startActivity(intent);
                 return true;
             }
         } catch (Throwable ignore) {
@@ -312,13 +312,13 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
                 || url.startsWith(WebView.SCHEME_MAILTO)
                 || url.startsWith(WebView.SCHEME_GEO)) {
             try {
-                Activity mActivity = null;
-                if ((mActivity = mWeakReference.get()) == null) {
+                Context mContext = null;
+                if ((mContext = mWeakReference.get()) == null) {
                     return false;
                 }
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(url));
-                mActivity.startActivity(intent);
+                mContext.startActivity(intent);
             } catch (ActivityNotFoundException ignored) {
                 if (XWebConfig.DEBUG) {
                     ignored.printStackTrace();
@@ -486,7 +486,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
     public static class Builder {
 
-        private Activity mActivity;
+        private Context mContext;
         private WebViewClient mClient;
         private boolean mWebClientHelper;
         private PermissionInterceptor mPermissionInterceptor;
@@ -494,8 +494,8 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
         private boolean mIsInterceptUnkownScheme;
         private int mUrlHandleWays;
 
-        public Builder setActivity(Activity activity) {
-            this.mActivity = activity;
+        public Builder setContext(Context context) {
+            this.mContext = context;
             return this;
         }
 

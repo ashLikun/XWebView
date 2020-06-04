@@ -99,7 +99,7 @@ public class XWebConfig {
     }
 
     /**
-     * 解决兼容 Android 4.4 java.lang.NoSuchMethodError: com.tencent.smtt.sdk.CookieManager.removeSessionCookies
+     * 解决兼容 Android 4.4 java.lang.NoSuchMethodError: android.webkit.CookieManager.removeSessionCookies
      */
     public static void removeSessionCookies() {
         removeSessionCookies(null);
@@ -171,7 +171,7 @@ public class XWebConfig {
 
 
     /**
-     * Android  4.4  NoSuchMethodError: com.tencent.smtt.sdk.CookieManager.removeAllCookies
+     * Android  4.4  NoSuchMethodError: android.webkit.CookieManager.removeAllCookies
      *
      * @param callback
      */

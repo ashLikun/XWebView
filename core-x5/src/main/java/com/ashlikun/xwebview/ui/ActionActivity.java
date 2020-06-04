@@ -1,9 +1,11 @@
 package com.ashlikun.xwebview.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -14,6 +16,7 @@ import java.io.File;
 import java.util.List;
 
 import static android.provider.MediaStore.EXTRA_OUTPUT;
+
 
 
 /**
@@ -40,10 +43,10 @@ public final class ActionActivity extends Activity {
     public static final int REQUEST_CODE = 0x254;
 
 
-    public static void start(Activity activity, Action action) {
-        Intent mIntent = new Intent(activity, ActionActivity.class);
+    public static void start(Context context, Action action) {
+        Intent mIntent = new Intent(context, ActionActivity.class);
         mIntent.putExtra(KEY_ACTION, action);
-        activity.startActivity(mIntent);
+        context.startActivity(mIntent);
     }
 
     public static void setChooserListener(ChooserListener chooserListener) {

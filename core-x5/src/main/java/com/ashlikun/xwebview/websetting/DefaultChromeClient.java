@@ -1,14 +1,16 @@
 package com.ashlikun.xwebview.websetting;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import android.view.View;
 
 import com.ashlikun.xwebview.XWebUtils;
 import com.ashlikun.xwebview.indicator.IndicatorController;
@@ -42,13 +44,13 @@ import java.util.List;
 public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
     /**
-     * Activity 的弱引用
+     * Context 的弱引用
      */
-    private WeakReference<Activity> mActivityWeakReference = null;
+    private WeakReference<Context> mContextWeakReference = null;
     /**
      * Android WebChromeClient path ，用于反射，用户是否重写来该方法
      */
-    public static final String ANDROID_WEBCHROMECLIENT_PATH = "com.tencent.smtt.sdk.WebChromeClient";
+    public static final String ANDROID_WEBCHROMECLIENT_PATH = "android.webkit.WebChromeClient";
     /**
      * WebChromeClient
      */
@@ -98,7 +100,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
      */
     private Object mFileChooser;
 
-    public DefaultChromeClient(Activity activity,
+    public DefaultChromeClient(Context context,
                                IndicatorController indicatorController,
                                WebChromeClient chromeClient,
                                @Nullable IVideo iVideo,
@@ -107,7 +109,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
         this.mIndicatorController = indicatorController;
         mIsWrapper = chromeClient != null ? true : false;
         this.mWebChromeClient = chromeClient;
-        mActivityWeakReference = new WeakReference<Activity>(activity);
+        mContextWeakReference = new WeakReference<Context>(context);
         this.mIVideo = iVideo;
         this.mPermissionInterceptor = permissionInterceptor;
         this.mWebView = webView;
@@ -170,7 +172,6 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
         onGeolocationPermissionsShowPromptInternal(origin, callback);
     }
 
-
     private void onGeolocationPermissionsShowPromptInternal(String origin, GeolocationPermissionsCallback callback) {
 
         if (mPermissionInterceptor != null) {
@@ -180,14 +181,14 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
             }
         }
 
-        Activity mActivity = mActivityWeakReference.get();
-        if (mActivity == null) {
+        Context context = mContextWeakReference.get();
+        if (context == null) {
             callback.invoke(origin, false, false);
             return;
         }
 
         List<String> deniedPermissions = null;
-        if ((deniedPermissions = XWebUtils.getDeniedPermissions(mActivity, WebPermissions.LOCATION)).isEmpty()) {
+        if ((deniedPermissions = XWebUtils.getDeniedPermissions(context, WebPermissions.LOCATION)).isEmpty()) {
             callback.invoke(origin, true, false);
         } else {
 
@@ -196,7 +197,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
             ActionActivity.setPermissionListener(mPermissionListener);
             this.mCallback = callback;
             this.mOrigin = origin;
-            ActionActivity.start(mActivity, mAction);
+            ActionActivity.start(context, mAction);
         }
 
 
@@ -206,7 +207,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
         @Override
         public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
             if (extras.getInt(ActionActivity.KEY_FROM_INTENTION) == FROM_CODE_INTENTION_LOCATION) {
-                boolean hasPermission = XWebUtils.hasPermission(mActivityWeakReference.get(), permissions);
+                boolean hasPermission = XWebUtils.hasPermission(mContextWeakReference.get(), permissions);
                 if (mCallback != null) {
                     if (hasPermission) {
                         mCallback.invoke(mOrigin, true, false);
@@ -298,7 +299,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     }
 
     private boolean openFileChooserAboveL(WebView webView, ValueCallback<Uri[]> valueCallbacks, FileChooserParams fileChooserParams) {
-        Activity mActivity = this.mActivityWeakReference.get();
+        Activity mActivity = XWebUtils.getActivity(this.mContextWeakReference.get());
         if (mActivity == null || mActivity.isFinishing()) {
             return false;
         }
@@ -332,16 +333,12 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     }
 
 
-
-
     private void createAndOpenCommonFileChooser(ValueCallback valueCallback, String mimeType) {
-        Activity mActivity = this.mActivityWeakReference.get();
+        Activity mActivity = XWebUtils.getActivity(this.mContextWeakReference.get());
         if (mActivity == null || mActivity.isFinishing()) {
             valueCallback.onReceiveValue(new Object());
             return;
         }
-
-
         XWebUtils.showFileChooserCompat(mActivity,
                 mWebView,
                 null,
@@ -364,8 +361,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
     @Override
     public void onShowCustomView(View view, IX5WebChromeClient.CustomViewCallback callback) {
-        if (XWebUtils.isOverriedMethod(mWebChromeClient, "onShowCustomView",
-                ANDROID_WEBCHROMECLIENT_PATH + ".onShowCustomView", View.class, IX5WebChromeClient.CustomViewCallback.class)) {
+        if (XWebUtils.isOverriedMethod(mWebChromeClient, "onShowCustomView", ANDROID_WEBCHROMECLIENT_PATH + ".onShowCustomView", View.class, IX5WebChromeClient.CustomViewCallback.class)) {
             super.onShowCustomView(view, callback);
             return;
         }

@@ -25,5 +25,5 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation rootProject.ext.designVersion
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0+'
-    implementation project(':core')
+    implementation project(':core-x5')
 }

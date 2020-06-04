@@ -1,6 +1,9 @@
 package com.ashlikun.xwebview.jsbridge;
 
 import android.graphics.Bitmap;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import com.ashlikun.xwebview.websetting.MiddlewareWebClientBase;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
@@ -38,6 +41,7 @@ public class BridgeWebViewClient extends MiddlewareWebClientBase {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest webResourceRequest) {
         String url = webResourceRequest.getUrl().toString();
