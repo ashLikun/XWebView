@@ -1,13 +1,6 @@
 package com.ashlikun.xwebview;
 
-import android.app.Activity;
-import androidx.annotation.ColorInt;
-import androidx.annotation.IdRes;
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.collection.ArrayMap;
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -15,6 +8,13 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.collection.ArrayMap;
 
 import com.ashlikun.xwebview.event.EventHandlerImpl;
 import com.ashlikun.xwebview.event.EventInterceptor;
@@ -65,9 +65,9 @@ import java.util.Map;
 
 public final class XWeb {
     /**
-     * Activity
+     * Context
      */
-    private Activity mActivity;
+    private Context mContext;
     /**
      * 承载 WebParentLayout 的 ViewGroup
      */
@@ -109,10 +109,6 @@ public final class XWeb {
      */
     private ArrayMap<String, Object> mJavaObjects = new ArrayMap<>();
     /**
-     * 用于表示当前在 Fragment 使用还是 Activity 上使用
-     */
-    private int TAG_TARGET = 0;
-    /**
      * WebListenerManager
      */
     private WebListenerManager mWebListenerManager;
@@ -132,14 +128,6 @@ public final class XWeb {
      * 安全类型
      */
     private SecurityType mSecurityType = SecurityType.DEFAULT_CHECK;
-    /**
-     * Activity 标识
-     */
-    private static final int ACTIVITY_TAG = 0;
-    /**
-     * Fragment 标识
-     */
-    private static final int FRAGMENT_TAG = 1;
     /**
      * Web 注入对象
      */
@@ -194,12 +182,10 @@ public final class XWeb {
 
 
     private XWeb(XBuilder builder) {
-        TAG_TARGET = builder.mTag;
-        this.mActivity = builder.mActivity;
-        this.mViewGroup = builder.mViewGroup;
+        this.mContext = builder.mContext;
         this.mIEventHandler = builder.mIEventHandler;
         this.mEnableIndicator = builder.mEnableIndicator;
-        mWebCreator = builder.mWebCreator == null ? configWebCreator(builder.mBaseIndicatorView, builder.mIndex, builder.mLayoutParams, builder.mIndicatorColor, builder.mHeight, builder.mWebView, builder.mWebLayout) : builder.mWebCreator;
+        mWebCreator = builder.mWebCreator == null ? configWebCreator(builder.mBaseIndicatorView, builder.mIndex, builder.mIndicatorColor, builder.mHeight, builder.mWebView, builder.mWebLayout) : builder.mWebCreator;
         mIndicatorController = builder.mIndicatorController;
         this.mWebChromeClient = builder.mWebChromeClient;
         this.mWebViewClient = builder.mWebViewClient;
@@ -257,36 +243,26 @@ public final class XWeb {
     public XWeb clearWebCache() {
 
         if (this.getWebCreator().getWebView() != null) {
-            XWebUtils.clearWebViewAllCache(mActivity, this.getWebCreator().getWebView());
+            XWebUtils.clearWebViewAllCache(mContext, this.getWebCreator().getWebView());
         } else {
-            XWebUtils.clearWebViewAllCache(mActivity);
+            XWebUtils.clearWebViewAllCache(mContext);
         }
         return this;
     }
 
 
-    public static IndicatorBuilder withXml(@NonNull Activity activity) {
-        if (activity == null) {
-            throw new NullPointerException("activity can not be null .");
+    public static IndicatorBuilder with(@NonNull Context context) {
+        if (context == null) {
+            throw new NullPointerException("context can not be null .");
         }
-        return new IndicatorBuilder(new XBuilder(activity));
+        return new IndicatorBuilder(new XBuilder(context));
     }
 
-    public static XBuilder with(@NonNull Activity activity) {
-        if (activity == null) {
-            throw new NullPointerException("activity can not be null .");
+    public static IndicatorBuilder with(@NonNull WebView webView) {
+        if (webView == null) {
+            throw new NullPointerException("webView can not be null .");
         }
-        return new XBuilder(activity);
-    }
-
-    public static XBuilder with(@NonNull Fragment fragment) {
-
-
-        Activity mActivity = null;
-        if ((mActivity = fragment.getActivity()) == null) {
-            throw new NullPointerException("activity can not be null .");
-        }
-        return new XBuilder(mActivity, fragment);
+        return new IndicatorBuilder(new XBuilder(webView));
     }
 
     /**
@@ -364,6 +340,13 @@ public final class XWeb {
             return this;
         }
 
+        public XWeb ok() {
+            if (!isReady) {
+                ready();
+            }
+            return mWeb;
+        }
+
         public XWeb go(@Nullable String url) {
             if (!isReady) {
                 ready();
@@ -389,17 +372,17 @@ public final class XWeb {
      * 添加兼容的js接口
      */
     private void doCompat() {
-        mJavaObjects.put("xweb", mWebJsInterfaceCompat = new WebJsInterfaceCompat(this, mActivity));
+        mJavaObjects.put("xweb", mWebJsInterfaceCompat = new WebJsInterfaceCompat(this, mContext));
     }
 
-    private WebCreator configWebCreator(BaseIndicatorView progressView, int index, ViewGroup.LayoutParams lp, int indicatorColor, int height_dp, WebView webView, IWebLayout webLayout) {
+    private WebCreator configWebCreator(BaseIndicatorView progressView, int index, int indicatorColor, int height_dp, WebView webView, IWebLayout webLayout) {
 
         if (progressView != null && mEnableIndicator) {
-            return new DefaultWebCreator(mActivity, mViewGroup, lp, index, progressView, webView, webLayout);
+            return new DefaultWebCreator(mContext, mViewGroup, index, progressView, webView, webLayout);
         } else {
             return mEnableIndicator ?
-                    new DefaultWebCreator(mActivity, mViewGroup, lp, index, indicatorColor, height_dp, webView, webLayout)
-                    : new DefaultWebCreator(mActivity, mViewGroup, lp, index, webView, webLayout);
+                    new DefaultWebCreator(mContext, mViewGroup, index, indicatorColor, height_dp, webView, webLayout)
+                    : new DefaultWebCreator(mContext, mViewGroup, index, webView, webLayout);
         }
     }
 
@@ -432,14 +415,14 @@ public final class XWeb {
     }
 
     private IVideo getIVideo() {
-        return mIVideo == null ? new VideoImpl(mActivity, mWebCreator.getWebView()) : mIVideo;
+        return mIVideo == null ? new VideoImpl(mContext, mWebCreator.getWebView()) : mIVideo;
     }
 
     private WebViewClient getWebViewClient() {
 
         DefaultWebClient mDefaultWebClient = DefaultWebClient
                 .createBuilder()
-                .setActivity(this.mActivity)
+                .setContext(this.mContext)
                 .setClient(this.mWebViewClient)
                 .setWebClientHelper(this.mWebClientHelper)
                 .setPermissionInterceptor(this.mPermissionInterceptor)
@@ -467,7 +450,7 @@ public final class XWeb {
 
     private XWeb ready() {
 
-        XWebConfig.initCookiesManager(mActivity.getApplicationContext());
+        XWebConfig.initCookiesManager(mContext.getApplicationContext());
         IWebSettings mWebSettings = this.mWebSettings;
         if (mWebSettings == null) {
             this.mWebSettings = mWebSettings = AbsXWebSettings.getInstance();
@@ -503,7 +486,7 @@ public final class XWeb {
                         : this.mIndicatorController;
 
         DefaultChromeClient mDefaultChromeClient =
-                new DefaultChromeClient(this.mActivity,
+                new DefaultChromeClient(this.mContext,
                         this.mIndicatorController = mIndicatorController,
                         this.mWebChromeClient, this.mIVideo = getIVideo(),
                         this.mPermissionInterceptor, mWebCreator.getWebView());
@@ -531,16 +514,14 @@ public final class XWeb {
 
 
     public static final class XBuilder {
-        private Activity mActivity;
-        private Fragment mFragment;
-        private ViewGroup mViewGroup;
+        private Context mContext;
         private boolean mIsNeedDefaultProgress;
+        private ViewGroup mViewGroup;
         private int mIndex = -1;
         private BaseIndicatorView mBaseIndicatorView;
         private IndicatorController mIndicatorController = null;
         /*默认进度条是显示的*/
         private boolean mEnableIndicator = true;
-        private ViewGroup.LayoutParams mLayoutParams = null;
         private WebViewClient mWebViewClient;
         private WebChromeClient mWebChromeClient;
         private int mIndicatorColor = -1;
@@ -564,43 +545,22 @@ public final class XWeb {
         private View mErrorView;
         private int mErrorLayout;
         private int mReloadId;
-        private int mTag = -1;
 
 
-        public XBuilder(@NonNull Activity activity, @NonNull Fragment fragment) {
-            mActivity = activity;
-            mFragment = fragment;
-            mTag = XWeb.FRAGMENT_TAG;
+        public XBuilder(@NonNull Context context) {
+            mContext = context;
         }
 
-        public XBuilder(@NonNull Activity activity) {
-            mActivity = activity;
-            mTag = XWeb.ACTIVITY_TAG;
+        public XBuilder(@NonNull WebView webView) {
+            mContext = webView.getContext();
+            this.mWebView = webView;
         }
 
-        /**
-         * 传入WebView的父控件。
-         */
-        public IndicatorBuilder setWebParent(@NonNull ViewGroup v, @NonNull ViewGroup.LayoutParams lp) {
-            this.mViewGroup = v;
-            this.mLayoutParams = lp;
-            return new IndicatorBuilder(this);
-        }
-
-        /**
-         * 传入WebView的父控件。
-         */
-        public IndicatorBuilder setWebParent(@NonNull ViewGroup v, int index, @NonNull ViewGroup.LayoutParams lp) {
-            this.mViewGroup = v;
-            this.mLayoutParams = lp;
-            this.mIndex = index;
+        public IndicatorBuilder ok() {
             return new IndicatorBuilder(this);
         }
 
         private PreXWeb buildWeb() {
-            if (mTag == XWeb.FRAGMENT_TAG && this.mViewGroup == null) {
-                throw new NullPointerException("ViewGroup is null,Please check your parameters .");
-            }
             return new PreXWeb(new XWeb(this));
         }
 

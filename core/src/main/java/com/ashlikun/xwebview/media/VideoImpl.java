@@ -1,10 +1,10 @@
 package com.ashlikun.xwebview.media;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
-import androidx.core.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -13,6 +13,9 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 
+import androidx.core.util.Pair;
+
+import com.ashlikun.xwebview.XWebUtils;
 import com.ashlikun.xwebview.event.EventInterceptor;
 
 import java.util.HashSet;
@@ -36,8 +39,9 @@ public class VideoImpl implements IVideo, EventInterceptor {
     private ViewGroup mMoiveParentView = null;
     private WebChromeClient.CustomViewCallback mCallback;
 
-    public VideoImpl(Activity mActivity, WebView webView) {
-        this.mActivity = mActivity;
+    public VideoImpl(Context context, WebView webView) {
+        this.mActivity = XWebUtils.getActivity(context);
+        ;
         this.mWebView = webView;
         mFlags = new HashSet<>();
 

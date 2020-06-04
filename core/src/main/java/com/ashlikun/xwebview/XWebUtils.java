@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -468,16 +469,16 @@ public class XWebUtils {
     }
 
 
-    public static String[] uriToPath(Activity activity, Uri[] uris) {
+    public static String[] uriToPath(Context context, Uri[] uris) {
 
-        if (activity == null || uris == null || uris.length == 0) {
+        if (context == null || uris == null || uris.length == 0) {
             return null;
         }
         try {
             String[] paths = new String[uris.length];
             int i = 0;
             for (Uri mUri : uris) {
-                paths[i++] = Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2 ? getFileAbsolutePath(activity, mUri) : getRealPathBelowVersion(activity, mUri);
+                paths[i++] = Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2 ? getFileAbsolutePath(context, mUri) : getRealPathBelowVersion(context, mUri);
 
             }
             return paths;
@@ -538,7 +539,7 @@ public class XWebUtils {
 
 
     @TargetApi(19)
-    static String getFileAbsolutePath(Activity context, Uri fileUri) {
+    static String getFileAbsolutePath(Context context, Uri fileUri) {
 
         if (context == null || fileUri == null) {
             return null;
@@ -756,7 +757,7 @@ public class XWebUtils {
         return true;
     }
 
-    public static List<String> getDeniedPermissions(Activity activity, String[] permissions) {
+    public static List<String> getDeniedPermissions(Context context, String[] permissions) {
 
         if (permissions == null || permissions.length == 0) {
             return null;
@@ -764,7 +765,7 @@ public class XWebUtils {
         List<String> deniedPermissions = new ArrayList<>();
         for (int i = 0; i < permissions.length; i++) {
 
-            if (!hasPermission(activity, permissions[i])) {
+            if (!hasPermission(context, permissions[i])) {
                 deniedPermissions.add(permissions[i]);
             }
         }
@@ -830,7 +831,7 @@ public class XWebUtils {
     /**
      * 显示文件选择
      */
-    public static boolean showFileChooserCompat(Activity activity,
+    public static boolean showFileChooserCompat(Context context,
                                                 WebView webView,
                                                 ValueCallback<Uri[]> valueCallbacks,
                                                 WebChromeClient.FileChooserParams fileChooserParams,
@@ -839,7 +840,7 @@ public class XWebUtils {
                                                 String mimeType,
                                                 Handler.Callback jsChannelCallback
     ) {
-        FileChooser fileChooser = FileChooser.newBuilder(activity, webView)
+        FileChooser fileChooser = FileChooser.newBuilder(context, webView)
                 .setUriValueCallbacks(valueCallbacks)
                 .setFileChooserParams(fileChooserParams)
                 .setUriValueCallback(valueCallback)
@@ -859,5 +860,22 @@ public class XWebUtils {
         } catch (Exception e) {
         }
         return "";
+    }
+
+    /**
+     * 方法功能：从context中获取activity，如果context不是activity那么久返回null
+     */
+    public static Activity getActivity(Context context) {
+        if (context == null) {
+            return null;
+        }
+        if (context instanceof Activity) {
+            return (Activity) context;
+        } else if (context instanceof ContextWrapper) {
+            return getActivity(((ContextWrapper) context).getBaseContext());
+        } else if (context instanceof androidx.appcompat.view.ContextThemeWrapper) {
+            return getActivity(((androidx.appcompat.view.ContextThemeWrapper) context).getBaseContext());
+        }
+        return null;
     }
 }

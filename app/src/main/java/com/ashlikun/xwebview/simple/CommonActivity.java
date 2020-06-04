@@ -45,10 +45,9 @@ public class CommonActivity extends AppCompatActivity {
         rootView = findViewById(R.id.rootView);
         toolbarTitle = findViewById(R.id.toolbar_title);
         XWebView webView = findViewById(R.id.webView);
-        xWeb = XWeb.withXml(this)
+        xWeb = XWeb.with(webView)
                 .useDefaultIndicator()
                 .setWebWebSettings(getWebSettings())
-                .setWebView(webView)
                 .setWebChromeClient(mWebChromeClient)
                 .setWebViewClient(mWebViewClient)
                 .createWeb()

@@ -1,6 +1,7 @@
 package com.ashlikun.xwebview.js;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.webkit.JavascriptInterface;
@@ -21,11 +22,11 @@ import java.lang.ref.WeakReference;
 public class WebJsInterfaceCompat {
 
     private WeakReference<XWeb> mReference = null;
-    private WeakReference<Activity> mActivityWeakReference = null;
+    private WeakReference<Context> mContextWeakReference = null;
 
-    public WebJsInterfaceCompat(XWeb xWeb, Activity activity) {
+    public WebJsInterfaceCompat(XWeb xWeb, Context context) {
         mReference = new WeakReference<XWeb>(xWeb);
-        mActivityWeakReference = new WeakReference<Activity>(activity);
+        mContextWeakReference = new WeakReference<Context>(context);
     }
 
 
@@ -36,9 +37,9 @@ public class WebJsInterfaceCompat {
 
     @JavascriptInterface
     public void uploadFile(String acceptType) {
-        if (mActivityWeakReference.get() != null && mReference.get() != null) {
+        if (mContextWeakReference.get() != null && mReference.get() != null) {
 
-            XWebUtils.showFileChooserCompat(mActivityWeakReference.get(),
+            XWebUtils.showFileChooserCompat(mContextWeakReference.get(),
                     mReference.get().getWebCreator().getWebView(),
                     null,
                     null,

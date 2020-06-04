@@ -2,6 +2,7 @@ package com.ashlikun.xwebview.filechooser;
 
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -59,7 +60,7 @@ public class FileChooser {
     /**
      * Activity
      */
-    private Activity mActivity;
+    private Context mContext;
     /**
      * ValueCallback
      */
@@ -122,7 +123,7 @@ public class FileChooser {
 
     public FileChooser(Builder builder) {
 
-        this.mActivity = builder.mActivity;
+        this.mContext = builder.mContext;
         this.mUriValueCallback = builder.mUriValueCallback;
         this.mUriValueCallbacks = builder.mUriValueCallbacks;
         this.mIsAboveLollipop = builder.mIsAboveLollipop;
@@ -157,23 +158,21 @@ public class FileChooser {
     private void fileChooser() {
 
         List<String> permission = null;
-        if (XWebUtils.getDeniedPermissions(mActivity, WebPermissions.STORAGE).isEmpty()) {
+        if (XWebUtils.getDeniedPermissions(mContext, WebPermissions.STORAGE).isEmpty()) {
             touchOffFileChooserAction();
         } else {
             Action mAction = Action.createPermissionsAction(WebPermissions.STORAGE);
             mAction.setFromIntention(FROM_INTENTION_CODE >> 2);
             ActionActivity.setPermissionListener(mPermissionListener);
-            ActionActivity.start(mActivity, mAction);
+            ActionActivity.start(mContext, mAction);
         }
-
-
     }
 
     private void touchOffFileChooserAction() {
         Action mAction = new Action();
         mAction.setAction(Action.ACTION_FILE);
         ActionActivity.setChooserListener(getChooserListener());
-        mActivity.startActivity(new Intent(mActivity, ActionActivity.class).putExtra(ActionActivity.KEY_ACTION, mAction)
+        mContext.startActivity(new Intent(mContext, ActionActivity.class).putExtra(ActionActivity.KEY_ACTION, mAction)
                 .putExtra(ActionActivity.KEY_FILE_CHOOSER_INTENT, getFileChooserIntent()));
     }
 
@@ -235,8 +234,8 @@ public class FileChooser {
             this.mWebUIController
                     .get()
                     .onSelectItemsPrompt(this.mWebView, mWebView.getUrl(),
-                            new String[]{mActivity.getString(R.string.xweb_camera),
-                                    mActivity.getString(R.string.xweb_file_chooser)}, getCallBack());
+                            new String[]{mContext.getString(R.string.xweb_camera),
+                                    mContext.getString(R.string.xweb_file_chooser)}, getCallBack());
         }
 
     }
@@ -268,7 +267,7 @@ public class FileChooser {
 
     private void onCameraAction() {
 
-        if (mActivity == null) {
+        if (mContext == null) {
             return;
         }
 
@@ -287,7 +286,7 @@ public class FileChooser {
             mAction.setPermissions(deniedPermissions.toArray(new String[]{}));
             mAction.setFromIntention(FROM_INTENTION_CODE >> 3);
             ActionActivity.setPermissionListener(this.mPermissionListener);
-            ActionActivity.start(mActivity, mAction);
+            ActionActivity.start(mContext, mAction);
         } else {
             openCameraAction();
         }
@@ -298,10 +297,10 @@ public class FileChooser {
 
         List<String> deniedPermissions = new ArrayList<>();
 
-        if (!XWebUtils.hasPermission(mActivity, WebPermissions.CAMERA)) {
+        if (!XWebUtils.hasPermission(mContext, WebPermissions.CAMERA)) {
             deniedPermissions.add(WebPermissions.CAMERA[0]);
         }
-        if (!XWebUtils.hasPermission(mActivity, WebPermissions.STORAGE)) {
+        if (!XWebUtils.hasPermission(mContext, WebPermissions.STORAGE)) {
             deniedPermissions.addAll(Arrays.asList(WebPermissions.STORAGE));
         }
         return deniedPermissions;
@@ -311,7 +310,7 @@ public class FileChooser {
         Action mAction = new Action();
         mAction.setAction(Action.ACTION_CAMERA);
         ActionActivity.setChooserListener(this.getChooserListener());
-        ActionActivity.start(mActivity, mAction);
+        ActionActivity.start(mContext, mAction);
     }
 
     private ActionActivity.PermissionListener mPermissionListener = new ActionActivity.PermissionListener() {
@@ -320,7 +319,7 @@ public class FileChooser {
         public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
 
             boolean tag = true;
-            tag = XWebUtils.hasPermission(mActivity, Arrays.asList(permissions)) ? true : false;
+            tag = XWebUtils.hasPermission(mContext, Arrays.asList(permissions)) ? true : false;
             permissionResult(tag, extras.getInt(ActionActivity.KEY_FROM_INTENTION));
 
         }
@@ -476,7 +475,7 @@ public class FileChooser {
     private void convertFileAndCallback(final Uri[] uris) {
 
         String[] paths = null;
-        if (uris == null || uris.length == 0 || (paths = XWebUtils.uriToPath(mActivity, uris)) == null || paths.length == 0) {
+        if (uris == null || uris.length == 0 || (paths = XWebUtils.uriToPath(mContext, uris)) == null || paths.length == 0) {
             mJsChannelCallback.call(null);
             return;
         }
@@ -495,7 +494,7 @@ public class FileChooser {
 
         if (sum > XWebConfig.MAX_FILE_LENGTH) {
             if (mWebUIController.get() != null) {
-                mWebUIController.get().onShowMessage(mActivity.getString(R.string.xweb_max_file_length_limit, (XWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), "convertFileAndCallback");
+                mWebUIController.get().onShowMessage(mContext.getString(R.string.xweb_max_file_length_limit, (XWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), "convertFileAndCallback");
             }
             mJsChannelCallback.call(null);
             return;
@@ -525,13 +524,13 @@ public class FileChooser {
             mUriValueCallbacks.onReceiveValue(null);
             return;
         }
-        String[] paths = XWebUtils.uriToPath(mActivity, datas);
+        String[] paths = XWebUtils.uriToPath(mContext, datas);
         if (paths == null || paths.length == 0) {
             mUriValueCallbacks.onReceiveValue(null);
             return;
         }
         final String path = paths[0];
-        mWebUIController.get().onLoading(mActivity.getString(R.string.xweb_loading));
+        mWebUIController.get().onLoading(mContext.getString(R.string.xweb_loading));
         AsyncTask.THREAD_POOL_EXECUTOR.execute(new WaitPhotoRunnable(path, new AboveLCallback(mUriValueCallbacks, datas, mWebUIController)));
 
     }
@@ -761,13 +760,13 @@ public class FileChooser {
         }
     }
 
-    public static Builder newBuilder(Activity activity, WebView webView) {
-        return new Builder().setActivity(activity).setWebView(webView);
+    public static Builder newBuilder(Context context, WebView webView) {
+        return new Builder().setContext(context).setWebView(webView);
     }
 
     public static final class Builder {
 
-        private Activity mActivity;
+        private Context mContext;
         private ValueCallback<Uri> mUriValueCallback;
         private ValueCallback<Uri[]> mUriValueCallbacks;
         private boolean mIsAboveLollipop = false;
@@ -791,8 +790,8 @@ public class FileChooser {
             return this;
         }
 
-        public Builder setActivity(Activity activity) {
-            mActivity = activity;
+        public Builder setContext(Context context) {
+            mContext = context;
             return this;
         }
 
