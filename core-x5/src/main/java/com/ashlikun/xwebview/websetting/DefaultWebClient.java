@@ -61,7 +61,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
     /**
      * Android  WebViewClient ' path 用于反射，判断用户是否重写了WebViewClient的某一个方法
      */
-    private static final String ANDROID_WEBVIEWCLIENT_PATH = "android.webkit.WebViewClient";
+    private static final String ANDROID_WEBVIEWCLIENT_PATH = "com.tencent.smtt.sdk.WebViewClient";
     /**
      * intent ' s scheme
      */

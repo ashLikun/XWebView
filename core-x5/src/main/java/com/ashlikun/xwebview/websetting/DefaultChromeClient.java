@@ -50,7 +50,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     /**
      * Android WebChromeClient path ，用于反射，用户是否重写来该方法
      */
-    public static final String ANDROID_WEBCHROMECLIENT_PATH = "android.webkit.WebChromeClient";
+    public static final String ANDROID_WEBCHROMECLIENT_PATH = "com.tencent.smtt.sdk.WebChromeClient";
     /**
      * WebChromeClient
      */

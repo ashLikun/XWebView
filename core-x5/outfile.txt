@@ -1,2 +1,0 @@
-请将D:\likun\github\WebProxy\XWeb-core-x5\src\main\java\com\ashlikun\xwebview\websetting\AbsXWebSettings.java中 第76行 android.webkit.WebSettings 替换成 com.tencent.smtt.sdk.WebSettings 
-扫描完成！

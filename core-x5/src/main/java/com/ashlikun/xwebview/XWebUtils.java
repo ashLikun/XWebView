@@ -123,7 +123,7 @@ public class XWebUtils {
     /**
      * 解决低版本5.0-5.1,androidx.appcompat:appcompat:1.1.0有问题，1.0.0没有问题，高版本没有出来呢
      * 如Vivo x7
-     * Error inflating class android.webkit.WebView bug
+     * Error inflating class WebView bug
      * https://stackoverflow.com/questions/41025200/android-view-inflateexception-error-inflating-class-android-webkit-webview
      *
      * @param context
