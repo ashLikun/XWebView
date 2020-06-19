@@ -90,7 +90,7 @@ public class NestedWebView extends WebView implements NestedScrollingChild3 {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!isNestedScrollingEnabled() || !getScrollingChildHelper().hasNestedScrollingParent(ViewCompat.TYPE_TOUCH)) {
+        if (!isNestedScrollingEnabled()) {
             return super.onInterceptTouchEvent(ev);
         }
         /*
@@ -201,7 +201,7 @@ public class NestedWebView extends WebView implements NestedScrollingChild3 {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!isNestedScrollingEnabled() || !getScrollingChildHelper().hasNestedScrollingParent(ViewCompat.TYPE_TOUCH)) {
+        if (!isNestedScrollingEnabled()) {
             return super.onTouchEvent(event);
         }
         initVelocityTrackerIfNotExists();
@@ -376,6 +376,9 @@ public class NestedWebView extends WebView implements NestedScrollingChild3 {
      * @param curY
      */
     private boolean caculateV(int mActivePointerId, int curY) {
+        if (!isNestedScrollingEnabled()) {
+            return false;
+        }
         mVelocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
         int initialVelocityY = (int) mVelocityTracker.getYVelocity(mActivePointerId);
         int initialVelocityX = (int) mVelocityTracker.getXVelocity(mActivePointerId);
@@ -392,7 +395,7 @@ public class NestedWebView extends WebView implements NestedScrollingChild3 {
     @Override
     public void computeScroll() {
         super.computeScroll();
-        if (!isNestedScrollingEnabled() || !getScrollingChildHelper().hasNestedScrollingParent(ViewCompat.TYPE_TOUCH)) {
+        if (!isNestedScrollingEnabled()) {
             return;
         }
         if (mScroller.isFinished()) {
@@ -438,6 +441,9 @@ public class NestedWebView extends WebView implements NestedScrollingChild3 {
     }
 
     public void fling(int velocityY) {
+        if (!isNestedScrollingEnabled()) {
+            return;
+        }
         mScroller.fling(getScrollX(), getScrollY(), // start
                 0, velocityY, // velocities
                 0, 0, // x

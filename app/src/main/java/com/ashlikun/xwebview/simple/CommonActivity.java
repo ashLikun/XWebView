@@ -40,9 +40,10 @@ public class CommonActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         url = getIntent().getStringExtra("url");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_common);
+        setContentView(R.layout.activity_common_neast);
         toolbarTitle = findViewById(R.id.toolbar_title);
         XWebView webView = findViewById(R.id.webView);
+        webView.setNestedScrollingEnabled(true);
         xWeb = XWeb.with(webView)
                 .useDefaultIndicator()
                 .setWebWebSettings(getWebSettings())
