@@ -40,6 +40,7 @@ import java.util.Map;
  * 邮箱　　：496546144@qq.com
  * <p>
  * 功能介绍：封装的WebView
+ * WebView嵌套滚动的实现，默认关闭
  */
 
 public class XWebView extends NestedWebView {
