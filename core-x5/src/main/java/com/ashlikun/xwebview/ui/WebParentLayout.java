@@ -3,16 +3,17 @@ package com.ashlikun.xwebview.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import androidx.annotation.IdRes;
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.ashlikun.xwebview.R;
 import com.tencent.smtt.sdk.WebView;
@@ -25,7 +26,7 @@ import com.tencent.smtt.sdk.WebView;
  * 功能介绍：webview父控件,封装显示错误页面
  */
 
-public class WebParentLayout extends FrameLayout {
+public class WebParentLayout extends NestedFrameLayout {
     private AbsWebUIController mWebUIController = null;
     @LayoutRes
     private int mErrorLayoutRes;

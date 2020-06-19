@@ -9,7 +9,13 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
-import android.widget.LinearLayout;
+import android.webkit.DownloadListener;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,19 +26,12 @@ import com.ashlikun.xwebview.websetting.AbsXWebSettings;
 import com.ashlikun.xwebview.websetting.IWebSettings;
 import com.ashlikun.xwebview.websetting.WebListenerManager;
 import com.ashlikun.xwebview.webview.XWebView;
-import com.tencent.smtt.export.external.interfaces.WebResourceError;
-import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
-import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
-import com.tencent.smtt.sdk.DownloadListener;
-import com.tencent.smtt.sdk.WebChromeClient;
-import com.tencent.smtt.sdk.WebView;
-import com.tencent.smtt.sdk.WebViewClient;
+
 
 
 public class CommonActivity extends AppCompatActivity {
 
     XWeb xWeb;
-    LinearLayout rootView;
     TextView toolbarTitle;
     public String url;
 
@@ -42,7 +41,6 @@ public class CommonActivity extends AppCompatActivity {
         url = getIntent().getStringExtra("url");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_common);
-        rootView = findViewById(R.id.rootView);
         toolbarTitle = findViewById(R.id.toolbar_title);
         XWebView webView = findViewById(R.id.webView);
         xWeb = XWeb.with(webView)

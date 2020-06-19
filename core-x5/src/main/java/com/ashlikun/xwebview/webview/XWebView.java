@@ -8,16 +8,11 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
-
-import androidx.core.view.NestedScrollingChild2;
-import androidx.core.view.NestedScrollingChildHelper;
-import androidx.core.view.ViewCompat;
 
 import com.ashlikun.xwebview.XWebUtils;
 import com.ashlikun.xwebview.js.JsCallJava;
@@ -47,24 +42,12 @@ import java.util.Map;
  * 功能介绍：封装的WebView
  */
 
-public class XWebView extends WebView implements NestedScrollingChild2 {
+public class XWebView extends NestedWebView {
     private Map<String, JsCallJava> mJsCallJavas;
     private Map<String, String> mInjectJavaScripts;
     private FixedOnReceivedTitle mFixedOnReceivedTitle;
     private boolean mIsInited;
     private Boolean mIsAccessibilityEnabledOriginal;
-
-    /**
-     * @param context
-     */
-    private int mLastMotionY;
-
-    private final int[] mScrollOffset = new int[2];
-    private final int[] mScrollConsumed = new int[2];
-
-    private int mNestedYOffset;
-
-    private NestedScrollingChildHelper mChildHelper;
 
     public XWebView(Context context) {
         this(context, null);
@@ -75,9 +58,10 @@ public class XWebView extends WebView implements NestedScrollingChild2 {
         removeSearchBoxJavaBridge();
         mIsInited = true;
         mFixedOnReceivedTitle = new FixedOnReceivedTitle();
-        mChildHelper = new NestedScrollingChildHelper(this);
-        setNestedScrollingEnabled(true);
+        //默认不支持嵌套滚动
+        setNestedScrollingEnabled(false);
     }
+
 
     /**
      * 经过大量的测试，按照以下方式才能保证JS脚本100%注入成功：
@@ -164,7 +148,7 @@ public class XWebView extends WebView implements NestedScrollingChild2 {
         String trace = Log.getStackTraceString(e);
         if (trace.contains("android.content.pm.PackageManager$NameNotFoundException")
                 || trace.contains("java.lang.RuntimeException: Cannot load WebView")
-                || trace.contains("com.tencent.smtt.sdk.WebViewFactory$MissingWebViewPackageException: Failed to load WebView provider: No WebView installed")) {
+                || trace.contains("android.webkit.WebViewFactory$MissingWebViewPackageException: Failed to load WebView provider: No WebView installed")) {
 
             return new Pair<Boolean, String>(true, "WebView load failed, " + messageCause);
         }
@@ -287,8 +271,6 @@ public class XWebView extends WebView implements NestedScrollingChild2 {
             super.onPageFinished(view, url);
             mXWebView.mFixedOnReceivedTitle.onPageFinished(view);
         }
-
-
     }
 
     public static class XWebChrome extends MiddlewareWebChromeBase {
@@ -381,8 +363,8 @@ public class XWebView extends WebView implements NestedScrollingChild2 {
      */
     private void fixedStillAttached() {
         // java.lang.Throwable: Error: WebView.destroy() called while still attached!
-        // at com.tencent.smtt.sdk.WebViewClassic.destroy(WebViewClassic.java:4142)
-        // at com.tencent.smtt.sdk.WebView.destroy(WebView.java:707)
+        // at android.webkit.WebViewClassic.destroy(WebViewClassic.java:4142)
+        // at android.webkit.WebView.destroy(WebView.java:707)
         ViewParent parent = getParent();
         if (parent instanceof ViewGroup) {
             // 由于自定义webView构建时传入了该Activity的context对象，因此需要先从父容器中移除webView，然后再销毁webView；
@@ -393,19 +375,16 @@ public class XWebView extends WebView implements NestedScrollingChild2 {
 
     /**
      * 解决WebView内存泄漏问题
-     * X5不需要
      */
     private void releaseConfigCallback() {
         // JELLY_BEAN
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             try {
                 Field field = WebView.class.getDeclaredField("mWebViewCore");
-                if (field != null) {
-                    field = field.getType().getDeclaredField("mBrowserFrame");
-                    field = field.getType().getDeclaredField("sConfigCallback");
-                    field.setAccessible(true);
-                    field.set(null, null);
-                }
+                field = field.getType().getDeclaredField("mBrowserFrame");
+                field = field.getType().getDeclaredField("sConfigCallback");
+                field.setAccessible(true);
+                field.set(null, null);
             } catch (NoSuchFieldException e) {
             } catch (IllegalAccessException e) {
             }
@@ -488,107 +467,5 @@ public class XWebView extends WebView implements NestedScrollingChild2 {
         if (mIsAccessibilityEnabledOriginal != null) {
             setAccessibilityEnabled(mIsAccessibilityEnabledOriginal);
         }
-    }
-
-
-    /********************************************************************************************
-     *                                           嵌套滑动
-     ********************************************************************************************/
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        boolean result = false;
-        MotionEvent trackedEvent = MotionEvent.obtain(event);
-        final int action = event.getAction();
-        if (action == MotionEvent.ACTION_DOWN) {
-            mNestedYOffset = 0;
-        }
-        int y = (int) event.getY();
-
-        event.offsetLocation(0, mNestedYOffset);
-
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                mLastMotionY = y;
-                startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
-                result = super.onTouchEvent(event);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                int deltaY = mLastMotionY - y;
-
-                if (dispatchNestedPreScroll(0, deltaY, mScrollConsumed, mScrollOffset)) {
-                    deltaY -= mScrollConsumed[1];
-                    trackedEvent.offsetLocation(0, mScrollOffset[1]);
-                    mNestedYOffset += mScrollOffset[1];
-                }
-
-                mLastMotionY = y - mScrollOffset[1];
-
-                int oldY = getScrollY();
-                int newScrollY = Math.max(0, oldY + deltaY);
-                int dyConsumed = newScrollY - oldY;
-                int dyUnconsumed = deltaY - dyConsumed;
-
-                if (dispatchNestedScroll(0, dyConsumed, 0, dyUnconsumed, mScrollOffset)) {
-                    mLastMotionY -= mScrollOffset[1];
-                    trackedEvent.offsetLocation(0, mScrollOffset[1]);
-                    mNestedYOffset += mScrollOffset[1];
-                }
-
-                result = super.onTouchEvent(trackedEvent);
-                trackedEvent.recycle();
-                break;
-            case MotionEvent.ACTION_POINTER_DOWN:
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                stopNestedScroll();
-                result = super.onTouchEvent(event);
-                break;
-        }
-        return result;
-    }
-
-    @Override
-    public void setNestedScrollingEnabled(boolean enabled) {
-        mChildHelper.setNestedScrollingEnabled(enabled);
-    }
-
-    @Override
-    public boolean isNestedScrollingEnabled() {
-        return mChildHelper.isNestedScrollingEnabled();
-    }
-
-    @Override
-    public boolean startNestedScroll(int axes, int type) {
-        return mChildHelper.startNestedScroll(axes, type);
-    }
-
-    @Override
-    public void stopNestedScroll(int type) {
-        mChildHelper.stopNestedScroll(type);
-    }
-
-    @Override
-    public boolean hasNestedScrollingParent(int type) {
-        return mChildHelper.hasNestedScrollingParent(type);
-    }
-
-    @Override
-    public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int[] offsetInWindow, int type) {
-        return mChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow, type);
-    }
-
-    @Override
-    public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow, int type) {
-        return mChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type);
-    }
-
-    @Override
-    public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
-        return mChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
-    }
-
-    @Override
-    public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
-        return mChildHelper.dispatchNestedPreFling(velocityX, velocityY);
     }
 }

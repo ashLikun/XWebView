@@ -20,7 +20,6 @@ import com.ashlikun.xwebview.indicator.WebIndicator;
 import com.ashlikun.xwebview.ui.WebParentLayout;
 import com.tencent.smtt.sdk.WebView;
 
-
 /**
  * @author　　: 李坤
  * 创建时间: 2018/9/21 15:53
@@ -143,7 +142,7 @@ public class DefaultWebCreator implements WebCreator {
         if (mViewGroup == null) {
             mViewGroup = (ViewGroup) mWebView.getParent();
         }
-        ViewGroup.LayoutParams mLayoutParams = null;
+        ViewGroup.LayoutParams mLayoutParams = mWebView.getLayoutParams();
         if (mLayoutParams == null) {
             mLayoutParams = new ViewGroup.LayoutParams(-1, -1);
         }
@@ -165,13 +164,18 @@ public class DefaultWebCreator implements WebCreator {
         return mFrameLayout;
     }
 
-
     private ViewGroup createLayout() {
         WebParentLayout mFrameLayout = new WebParentLayout(mContext);
         mFrameLayout.setId(R.id.web_parent_layout_id);
         mFrameLayout.setBackgroundColor(Color.WHITE);
         View target = mIWebLayout == null ? (this.mWebView = (WebView) createWebView()) : webLayout();
-        FrameLayout.LayoutParams mLayoutParams = new FrameLayout.LayoutParams(-1, -1);
+        FrameLayout.LayoutParams mLayoutParams;
+        if (mWebView.getLayoutParams() != null) {
+            mLayoutParams = new FrameLayout.LayoutParams(mWebView.getLayoutParams());
+        } else {
+            mLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        }
+
         if (target.getParent() != null) {
             ((ViewGroup) target.getParent()).removeView(target);
         }
