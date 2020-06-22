@@ -264,53 +264,51 @@ public class NestedWebView extends WebView implements NestedScrollingChild3 {
                     mIsBeingDragged = true;
                 }
 
-                if (mIsBeingDragged) {
-                    //上一次的坐标
-                    mLastMotionY = y - mScrollOffset[1];
-                    int scrolledDeltaY = 0;
-                    int unconsumedY = deltaY;
-                    if (Math.abs(deltaY) > 0) {
-                        if (deltaY <= 0) {
-                            //向顶部滑动
-                            if (canScrollVertically(-1)) {
-                                if (getScrollY() + deltaY < 0) {
-                                    scrolledDeltaY = -getScrollY();
-                                    unconsumedY = getScrollY() + deltaY;
-                                    //这行不知对不对
-                                    vtev.offsetLocation(0, unconsumedY);
-                                    mNestedYOffset += unconsumedY;
-                                } else {
-                                    scrolledDeltaY = deltaY;
-                                    unconsumedY = 0;
-                                }
+                //上一次的坐标
+                mLastMotionY = y - mScrollOffset[1];
+                int scrolledDeltaY = 0;
+                int unconsumedY = deltaY;
+                if (Math.abs(deltaY) > 0) {
+                    if (deltaY <= 0) {
+                        //向顶部滑动
+                        if (canScrollVertically(-1)) {
+                            if (getScrollY() + deltaY < 0) {
+                                scrolledDeltaY = -getScrollY();
+                                unconsumedY = getScrollY() + deltaY;
+                                //这行不知对不对
+                                vtev.offsetLocation(0, unconsumedY);
+                                mNestedYOffset += unconsumedY;
+                            } else {
+                                scrolledDeltaY = deltaY;
+                                unconsumedY = 0;
                             }
-                        } else {
-                            //向底部滑动
-                            if (canScrollVertically(1)) {
-                                if (deltaY - getTop() > 0) {
-                                    scrolledDeltaY = deltaY - getTop();
-                                    unconsumedY = getTop();
-                                    //这行不知对不对
-                                    vtev.offsetLocation(0, unconsumedY);
-                                    mNestedYOffset += unconsumedY;
-                                } else {
-                                    scrolledDeltaY = deltaY;
-                                    unconsumedY = 0;
-                                }
+                        }
+                    } else {
+                        //向底部滑动
+                        if (canScrollVertically(1)) {
+                            if (deltaY - getTop() > 0) {
+                                scrolledDeltaY = deltaY - getTop();
+                                unconsumedY = getTop();
+                                //这行不知对不对
+                                vtev.offsetLocation(0, unconsumedY);
+                                mNestedYOffset += unconsumedY;
+                            } else {
+                                scrolledDeltaY = deltaY;
+                                unconsumedY = 0;
                             }
                         }
                     }
-                    mScrollConsumed[1] = 0;
-
-                    dispatchNestedScroll(0, scrolledDeltaY, 0, unconsumedY, mScrollOffset,
-                            ViewCompat.TYPE_TOUCH, mScrollConsumed);
-
-                    mLastMotionY -= mScrollOffset[1];
-                    mNestedYOffset += mScrollOffset[1];
-
-                    vtev.offsetLocation(0, mScrollOffset[1]);
-                    mNestedYOffset += mScrollOffset[1];
                 }
+                mScrollConsumed[1] = 0;
+
+                dispatchNestedScroll(0, scrolledDeltaY, 0, unconsumedY, mScrollOffset,
+                        ViewCompat.TYPE_TOUCH, mScrollConsumed);
+
+                mLastMotionY -= mScrollOffset[1];
+                mNestedYOffset += mScrollOffset[1];
+
+                vtev.offsetLocation(0, mScrollOffset[1]);
+                mNestedYOffset += mScrollOffset[1];
                 if (deltaY == 0 && mIsBeingDragged) {
                     result = true;
                 } else {

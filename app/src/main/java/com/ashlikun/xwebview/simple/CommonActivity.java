@@ -28,7 +28,6 @@ import com.ashlikun.xwebview.websetting.WebListenerManager;
 import com.ashlikun.xwebview.webview.XWebView;
 
 
-
 public class CommonActivity extends AppCompatActivity {
 
     XWeb xWeb;
