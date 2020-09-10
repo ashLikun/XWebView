@@ -3,12 +3,13 @@ package com.ashlikun.xwebview;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
+
+import androidx.annotation.Nullable;
 
 import java.io.File;
 
@@ -148,7 +149,7 @@ public class XWebConfig {
         if (!TextUtils.isEmpty(XWebConfig.XWEB_CHCHE_PATH)) {
             return XWebConfig.XWEB_CHCHE_PATH;
         }
-        String dir = context.getExternalCacheDir().getAbsolutePath();
+        String dir = context.getCacheDir().getAbsolutePath();
         File mFile = new File(dir, XWebConfig.FILE_CACHE_PATH);
         try {
             if (!mFile.exists()) {

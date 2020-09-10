@@ -150,7 +150,7 @@ public class XWebConfig {
         if (!TextUtils.isEmpty(XWebConfig.XWEB_CHCHE_PATH)) {
             return XWebConfig.XWEB_CHCHE_PATH;
         }
-        String dir = context.getExternalCacheDir().getAbsolutePath();
+        String dir = context.getCacheDir().getAbsolutePath();
         File mFile = new File(dir, XWebConfig.FILE_CACHE_PATH);
         try {
             if (!mFile.exists()) {

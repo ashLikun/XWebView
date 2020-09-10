@@ -22,7 +22,7 @@ import com.ashlikun.xwebview.XWebUtils;
  */
 public abstract class AbsXWebSettings implements IWebSettings, WebListenerManager {
 
-    private WebSettings mWebSettings;
+    public WebSettings mWebSettings;
     public static final String USER_UC = " UCBrowser/11.6.4.950 ";
     public static final String USER_QQ_BROWSER = " MQQBrowser/8.0 ";
     public static final String USER_WEB = XWebConfig.WEB_VERSION;
@@ -57,7 +57,7 @@ public abstract class AbsXWebSettings implements IWebSettings, WebListenerManage
         return this;
     }
 
-    private void settings(WebView webView) {
+    public void settings(WebView webView) {
         mWebSettings = webView.getSettings();
         mWebSettings.setJavaScriptEnabled(true);
         mWebSettings.setSupportZoom(true);

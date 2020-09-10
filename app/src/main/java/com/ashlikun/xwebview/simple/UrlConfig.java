@@ -21,7 +21,8 @@ public class UrlConfig {
      */
     public static final String JD = "https://m.jd.com/";
     //人人影
-    public static final String RENREN_YIN = "https://testvideo.meiyayuming.com.cn/app/inviteposter.html?uid=4314017";
+//    public static final String RENREN_YIN = "https://testvideo.meiyayuming.com.cn/app/inviteposter.html?uid=4314017";
+    public static final String RENREN_YIN = "https://api-sip.510gow.com/sip/#/apph5/garbage/garbage?uid=55&sessionid=anjvCepN4YexPnKsmQhtNJx9Ztq6g7z2lBAQHXcTM3A0d6ukPB17FOUDE5pOSHTc";
     /**
      * 上传文件
      */
