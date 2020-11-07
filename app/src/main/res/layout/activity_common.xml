@@ -11,7 +11,7 @@
         layout="@layout/toorbar_main"
         app:layout_collapseMode="pin"></include>
 
-    <com.ashlikun.xwebview.webview.XWebView
+    <FrameLayout
         android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

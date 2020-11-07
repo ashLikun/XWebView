@@ -185,6 +185,7 @@ public final class XWeb {
         this.mContext = builder.mContext;
         this.mIEventHandler = builder.mIEventHandler;
         this.mEnableIndicator = builder.mEnableIndicator;
+        this.mViewGroup = builder.mViewGroup;
         mWebCreator = builder.mWebCreator == null ? configWebCreator(builder.mBaseIndicatorView, builder.mIndex, builder.mIndicatorColor, builder.mHeight, builder.mWebView, builder.mWebLayout) : builder.mWebCreator;
         mIndicatorController = builder.mIndicatorController;
         this.mWebChromeClient = builder.mWebChromeClient;
@@ -256,6 +257,13 @@ public final class XWeb {
             throw new NullPointerException("context can not be null .");
         }
         return new IndicatorBuilder(new XBuilder(context));
+    }
+
+    public static IndicatorBuilder with(@NonNull ViewGroup viewGroup) {
+        if (viewGroup == null) {
+            throw new NullPointerException("viewGroup can not be null .");
+        }
+        return new IndicatorBuilder(new XBuilder(viewGroup));
     }
 
     public static IndicatorBuilder with(@NonNull WebView webView) {
@@ -549,6 +557,13 @@ public final class XWeb {
 
         public XBuilder(@NonNull Context context) {
             mContext = context;
+        }
+
+        public XBuilder(@NonNull ViewGroup viewGroup) {
+            this.mViewGroup = viewGroup;
+            if (mContext == null) {
+                mContext = mViewGroup.getContext();
+            }
         }
 
         public XBuilder(@NonNull WebView webView) {

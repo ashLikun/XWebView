@@ -139,10 +139,13 @@ public class DefaultWebCreator implements WebCreator {
         }
         mIsCreated = true;
         ViewGroup mViewGroup = this.mViewGroup;
-        if (mViewGroup == null) {
-            mViewGroup = (ViewGroup) mWebView.getParent();
+        ViewGroup.LayoutParams mLayoutParams = null;
+        if (mWebView != null) {
+            if (mViewGroup == null) {
+                mViewGroup = (ViewGroup) mWebView.getParent();
+            }
+            mLayoutParams = mWebView.getLayoutParams();
         }
-        ViewGroup.LayoutParams mLayoutParams = mWebView.getLayoutParams();
         if (mLayoutParams == null) {
             mLayoutParams = new ViewGroup.LayoutParams(-1, -1);
         }
@@ -230,10 +233,10 @@ public class DefaultWebCreator implements WebCreator {
             mWebView = this.mWebView;
             XWebConfig.WEBVIEW_TYPE = XWebConfig.WEBVIEW_CUSTOM_TYPE;
         } else if (XWebConfig.IS_KITKAT_OR_BELOW_KITKAT) {
-            mWebView = new XWebView(mContext);
+            mWebView = new XWebView(mContext.getApplicationContext());
             XWebConfig.WEBVIEW_TYPE = XWebConfig.WEBVIEW_XWEB_SAFE_TYPE;
         } else {
-            mWebView = new WebView(mContext);
+            mWebView = new WebView(mContext.getApplicationContext());
             XWebConfig.WEBVIEW_TYPE = XWebConfig.WEBVIEW_DEFAULT_TYPE;
         }
 

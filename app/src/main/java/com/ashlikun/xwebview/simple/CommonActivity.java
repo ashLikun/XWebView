@@ -8,10 +8,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
-import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
@@ -24,8 +23,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.ashlikun.xwebview.XWeb;
 import com.ashlikun.xwebview.websetting.AbsXWebSettings;
 import com.ashlikun.xwebview.websetting.IWebSettings;
-import com.ashlikun.xwebview.websetting.WebListenerManager;
-import com.ashlikun.xwebview.webview.XWebView;
 
 
 public class CommonActivity extends AppCompatActivity {
@@ -41,13 +38,11 @@ public class CommonActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_common);
         toolbarTitle = findViewById(R.id.toolbar_title);
-        XWebView webView = findViewById(R.id.webView);
-        webView.setNestedScrollingEnabled(true);
+        ViewGroup webView = findViewById(R.id.webView);
+//        webView.setNestedScrollingEnabled(true);
         xWeb = XWeb.with(webView)
                 .useDefaultIndicator()
                 .setWebWebSettings(getWebSettings())
-                .setWebChromeClient(mWebChromeClient)
-                .setWebViewClient(mWebViewClient)
                 .createWeb()
                 .ready()
                 .go(url);
@@ -105,12 +100,6 @@ public class CommonActivity extends AppCompatActivity {
         public void onReceivedError(WebView webView, int i, String s, String s1) {
             super.onReceivedError(webView, i, s, s1);
             Log.e("CommonActivity", "onReceivedError   " + i + "  " + s + "   " + s1);
-        }
-
-        @Override
-        public void onReceivedError(WebView webView, WebResourceRequest webResourceRequest, WebResourceError webResourceError) {
-            super.onReceivedError(webView, webResourceRequest, webResourceError);
-            Log.e("CommonActivity", "onReceivedError   " + webResourceError.getErrorCode() + "   " + webResourceError.getDescription());
         }
 
         @Override
@@ -188,10 +177,6 @@ public class CommonActivity extends AppCompatActivity {
                 this.xWeb = xWeb;
             }
 
-            @Override
-            public WebListenerManager setDownloader(WebView webView, DownloadListener downloadListener) {
-                return super.setDownloader(webView, downloadListener);
-            }
         };
     }
 }
