@@ -49,6 +49,7 @@ import com.ashlikun.xwebview.webview.IWebLayout;
 import com.ashlikun.xwebview.webview.UrlLoaderImpl;
 import com.ashlikun.xwebview.webview.WebCreator;
 import com.tencent.smtt.sdk.WebChromeClient;
+import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 
@@ -307,6 +308,12 @@ public final class XWeb {
         return this.mWebCreator;
     }
 
+    public WebView getWebView() {
+        return this.mWebCreator.getWebView();
+    }
+    public WebSettings getWebSetting() {
+        return this.getWebSettings().getWebSettings();
+    }
     public IEventHandler getIEventHandler() {
         return this.mIEventHandler == null ? (this.mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.getWebView(), getInterceptor())) : this.mIEventHandler;
     }

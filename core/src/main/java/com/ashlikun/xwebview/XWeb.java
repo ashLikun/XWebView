@@ -6,6 +6,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -304,6 +305,14 @@ public final class XWeb {
 
     public WebCreator getWebCreator() {
         return this.mWebCreator;
+    }
+
+    public WebView getWebView() {
+        return this.mWebCreator.getWebView();
+    }
+
+    public WebSettings getWebSetting() {
+        return this.getWebSettings().getWebSettings();
     }
 
     public IEventHandler getIEventHandler() {

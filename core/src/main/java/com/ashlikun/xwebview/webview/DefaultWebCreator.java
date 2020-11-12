@@ -149,10 +149,13 @@ public class DefaultWebCreator implements WebCreator {
         if (mLayoutParams == null) {
             mLayoutParams = new ViewGroup.LayoutParams(-1, -1);
         }
-        if (mIndex == -1) {
-            mViewGroup.addView(this.mFrameLayout = (FrameLayout) createLayout(), mLayoutParams);
-        } else {
-            mViewGroup.addView(this.mFrameLayout = (FrameLayout) createLayout(), mIndex, mLayoutParams);
+        this.mFrameLayout = (FrameLayout) createLayout();
+        if(mViewGroup != null) {
+            if (mIndex == -1) {
+                mViewGroup.addView(mFrameLayout, mLayoutParams);
+            } else {
+                mViewGroup.addView(mFrameLayout, mIndex, mLayoutParams);
+            }
         }
         return this;
     }
