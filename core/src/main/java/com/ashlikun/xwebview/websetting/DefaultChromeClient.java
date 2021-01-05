@@ -189,7 +189,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
         List<String> deniedPermissions = null;
         if ((deniedPermissions = XWebUtils.getDeniedPermissions(context, WebPermissions.LOCATION)).isEmpty()) {
-            callback.invoke(origin, true, false);
+            callback.invoke(origin, true, true);
         } else {
 
             Action mAction = Action.createPermissionsAction(deniedPermissions.toArray(new String[]{}));

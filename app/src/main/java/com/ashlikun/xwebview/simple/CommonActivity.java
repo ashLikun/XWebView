@@ -3,6 +3,7 @@ package com.ashlikun.xwebview.simple;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -43,6 +44,7 @@ public class CommonActivity extends AppCompatActivity {
         setContentView(R.layout.activity_common);
         toolbarTitle = findViewById(R.id.toolbar_title);
         ViewGroup webView = findViewById(R.id.webView);
+
 //        webView.setNestedScrollingEnabled(true);
         xWeb = XWeb.with(webView)
                 .useDefaultIndicator()
@@ -51,8 +53,9 @@ public class CommonActivity extends AppCompatActivity {
                 .setWebViewClient(mWebViewClient)
                 .createWeb()
                 .ready()
-                .go(url);
-
+                .ok();
+//        xWeb.getUrlLoader().loadData(UrlConfig.AAA, "text/html; charset=UTF-8", null);
+        xWeb.getUrlLoader().loadUrl(url);
         findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,8 +128,27 @@ public class CommonActivity extends AppCompatActivity {
             super.onPageFinished(webView, s);
             Log.e("CommonActivity", "onPageFinished   " + s);
         }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Log.e("shouldOverrideUrl", url);
+            return false;
+        }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            Log.e("shouldOverrideUrl", url);
+            return false;
+        }
+
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            Log.e("onPageStarted", url);
+            super.onPageStarted(view, url, favicon);
+        }
     };
     protected WebChromeClient mWebChromeClient = new WebChromeClient() {
+
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             Log.e("CommonActivity", "onProgressChanged   " + newProgress);

@@ -381,6 +381,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
     }
 
     private void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
+        XWebUtils.loge("onMainFrameError   errorCode = " + errorCode + "      description = " + description + "      failingUrl = " + failingUrl);
         mErrorUrlsSet.add(failingUrl);
         // 下面逻辑判断开发者是否重写了 onMainFrameError 方法 ， 优先交给开发者处理
         if (this.mWebViewClient != null && webClientHelper) {

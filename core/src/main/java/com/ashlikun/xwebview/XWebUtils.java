@@ -84,7 +84,17 @@ public class XWebUtils {
         return (int) (dipValue * scale + 0.5f);
     }
 
+    public static void loge(String message) {
+        if (XWebConfig.DEBUG) {
+            Log.e(XWebConfig.XWEB_NAME, message);
+        }
+    }
 
+    public static void logi(String message) {
+        if (XWebConfig.DEBUG) {
+            Log.i(XWebConfig.XWEB_NAME, message);
+        }
+    }
     /**
      * 清空webview
      *

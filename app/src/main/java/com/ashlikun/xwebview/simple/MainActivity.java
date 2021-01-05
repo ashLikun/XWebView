@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onRenrenying(View view) {
 //        CommonActivity.start(this, UrlConfig.RENREN_YIN);
-        CommonActivity.start(this, UrlConfig.RENREN_YIN);
+        CommonActivity.start(this, UrlConfig.CHELAIL);
     }
 
     public void onDownload(View view) {
