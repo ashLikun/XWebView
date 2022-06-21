@@ -29,6 +29,8 @@ dependencies {
     implementation project(':core')
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    //x5内核
+    implementation "com.tencent.tbs.tbssdk:sdk:+"
 }
 repositories {
     mavenCentral()

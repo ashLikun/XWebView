@@ -21,6 +21,7 @@ android {
 dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'libs')
     compileOnly rootProject.ext.designVersion
+    compileOnly 'com.tencent.tbs.tbssdk:sdk:+'
 }
 
 apply from: '../maven.gradle'
