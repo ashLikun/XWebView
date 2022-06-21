@@ -83,6 +83,7 @@ public class XWebUtils {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
+
     public static void loge(String message) {
         if (XWebConfig.DEBUG) {
             Log.e(XWebConfig.XWEB_NAME, message);
@@ -415,7 +416,7 @@ public class XWebUtils {
         return size;
     }
 
-    static void clearWebViewAllCache(Context context, WebView webView) {
+    public static void clearWebViewAllCache(Context context, WebView webView) {
 
         try {
 
@@ -437,7 +438,7 @@ public class XWebUtils {
     }
 
 
-    static void clearWebViewAllCache(Context context) {
+    public static void clearWebViewAllCache(Context context) {
 
         try {
 
@@ -447,7 +448,7 @@ public class XWebUtils {
         }
     }
 
-    static int clearCacheFolder(final File dir, final int numDays) {
+    public static int clearCacheFolder(final File dir, final int numDays) {
 
         int deletedFiles = 0;
         if (dir != null) {
@@ -472,7 +473,7 @@ public class XWebUtils {
     }
 
 
-    static void clearCache(final Context context, final int numDays) {
+    public static void clearCache(final Context context, final int numDays) {
         Log.i("Info", String.format("Starting cache prune, deleting files older than %d days", numDays));
         int numDeletedFiles = clearCacheFolder(context.getCacheDir(), numDays);
         Log.i("Info", String.format("Cache pruning completed, %d files deleted", numDeletedFiles));

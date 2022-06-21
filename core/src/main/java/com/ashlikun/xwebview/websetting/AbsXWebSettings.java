@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 
 import com.ashlikun.xwebview.XWeb;
 import com.ashlikun.xwebview.XWebConfig;
-import com.ashlikun.xwebview.XWebUtils;
 
 /**
  * @author　　: 李坤
@@ -48,7 +47,6 @@ public abstract class AbsXWebSettings implements IWebSettings, WebListenerManage
     public final void bindWeb(XWeb xweb) {
         this.mWeb = xweb;
         this.bindWebSupport(xweb);
-
     }
 
     protected abstract void bindWebSupport(XWeb web);
@@ -65,13 +63,13 @@ public abstract class AbsXWebSettings implements IWebSettings, WebListenerManage
         mWebSettings.setSupportZoom(true);
         mWebSettings.setBuiltInZoomControls(false);
         mWebSettings.setSavePassword(false);
-        if (XWebUtils.checkNetwork(webView.getContext())) {
-            //根据cache-control获取数据。
-            mWebSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        } else {
-            //没网，则从本地获取，即离线加载
-            mWebSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        }
+//        if (XWebUtils.checkNetwork(webView.getContext())) {
+//            //根据cache-control获取数据。
+//            mWebSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+//        } else {
+//            //没网，则从本地获取，即离线加载
+//            mWebSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+//        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //适配5.0不允许http和https混合使用情况

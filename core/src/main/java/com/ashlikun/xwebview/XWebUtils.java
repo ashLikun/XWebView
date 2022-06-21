@@ -95,6 +95,7 @@ public class XWebUtils {
             Log.i(XWebConfig.XWEB_NAME, message);
         }
     }
+
     /**
      * 清空webview
      *
@@ -415,7 +416,7 @@ public class XWebUtils {
         return size;
     }
 
-    static void clearWebViewAllCache(Context context, WebView webView) {
+    public static void clearWebViewAllCache(Context context, WebView webView) {
 
         try {
 
@@ -437,17 +438,15 @@ public class XWebUtils {
     }
 
 
-    static void clearWebViewAllCache(Context context) {
-
+    public static void clearWebViewAllCache(Context context) {
         try {
-
             clearWebViewAllCache(context, new WebView(context.getApplicationContext()));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    static int clearCacheFolder(final File dir, final int numDays) {
+    public static int clearCacheFolder(final File dir, final int numDays) {
 
         int deletedFiles = 0;
         if (dir != null) {
